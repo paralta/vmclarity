@@ -152,7 +152,6 @@ Resources:
                   -v /opt/vmclarity:/data \
                   --env-file /etc/vmclarity/config.env \
                   idanfrim/vmclarity-backend:a9c650279da44a47841451076c8aab5575692ae4 run --log-level info
-
                 [Install]
                 WantedBy=multi-user.target
               mode: "000644"
