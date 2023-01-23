@@ -3,7 +3,7 @@
 ## Build the containers and publish them to your docker hub
 
 ```
-DOCKER_REGISTRY=<your docker hub> make push-docker
+VMCLARITY_TOOLS_BASE=<your vmclarity tools base image> DOCKER_REGISTRY=<your docker hub> make push-docker
 ```
 
 ## Update installation/aws/VMClarity.cfn
@@ -46,10 +46,12 @@ Update the cloud formation with the pushed docker images, for example:
 * Follow the wizard through to the end
 * Wait for install to complete
 
-# Ssh to the VMClarity server
+# SSH to the VMClarity server
 
 * Get the IP address from the CloudFormation stack's Output Tab
-* `ssh ubuntu@<ip address>`
+  ```
+  ssh -i <your ssh key pair> ubuntu@<ip address>
+  ```
 * Check the VMClarity Logs
   ```
   sudo journalctl -u vmclarity
@@ -59,7 +61,7 @@ Update the cloud formation with the pushed docker images, for example:
 
 * Copy the scanConfig.json into the ubuntu user's home directory
   ```
-  scp scanConfig.json ubuntu@<ip address>:~/scanConfig.json
+  scp -i <your ssh key pair> scanConfig.json ubuntu@<ip address>:~/scanConfig.json
   ```
 
 * While ssh'd into the VMClarity server run

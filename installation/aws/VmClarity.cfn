@@ -248,6 +248,15 @@ Resources:
               "ForAllValues:StringEquals":
                 "aws:TagKeys":
                   - Owner
+          - Effect: "Allow"
+            Action: "ec2:CopySnapshot"
+            Resource: !Sub "arn:${AWS::Partition}:ec2:*::snapshot/*"
+            Condition:
+              StringEquals:
+                "aws:RequestTag/Owner": "VMClarity"
+              "ForAllValues:StringEquals":
+                "aws:TagKeys":
+                  - Owner
           #
           # ##########################
 

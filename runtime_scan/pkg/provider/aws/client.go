@@ -235,6 +235,16 @@ func (c *Client) RunScanningJob(ctx context.Context, snapshot types.Snapshot, co
 			},
 		},
 		UserData: &userDataBase64,
+		// https://stackoverflow.com/questions/27769006/how-do-i-create-an-ec2-instance-with-a-public-ip-automatically-without-decla
+		NetworkInterfaces: []ec2types.InstanceNetworkInterfaceSpecification{
+			{
+				AssociatePublicIpAddress: utils.BoolPtr(true),
+				DeleteOnTermination:      utils.BoolPtr(true),
+				DeviceIndex:              utils.Int32Ptr(0),
+				Groups:                   nil, // use default for now
+				SubnetId:                 &c.awsConfig.SubnetID,
+			},
+		},
 	}, func(options *ec2.Options) {
 		options.Region = snapshot.GetRegion()
 	})
