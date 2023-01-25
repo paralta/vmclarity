@@ -23,7 +23,53 @@ write_files:
   - path: /opt/vmclarity/scanconfig.yaml
     permissions: "0644"
     content: |
-      {{ .ScannerCLIConfig }}
+      sbom:
+          enabled: true
+          analyzers_list:
+              - syft
+              - trivy
+          inputs:
+              - input: /vmToBeScanned
+                input_type: rootfs
+          merge_with: []
+          analyzers_config:
+              registry:
+                  skip-verify-tls: false
+                  use-http: false
+                  auths: []
+              analyzer:
+                  output_format: cyclonedx
+                  analyzer_list: []
+                  scope: ""
+                  trivy_config:
+                      timeout: 300
+                      cache_dir: ""
+              scanner: null
+              local_image_scan: false
+      vulnerabilities:
+          enabled: false
+          scanners_list: []
+          inputs: []
+          input_from_sbom: false
+          scanners_config: null
+      secrets:
+          enabled: true
+          scanners_list:
+              - gitleaks
+          inputs:
+              - input: /vmToBeScanned
+                input_type: dir
+          scanners_config:
+              gitleaks:
+                  binary_path: "/artifacts/gitleaks"
+      rootkits:
+          enabled: false
+      malware:
+          enabled: false
+      misconfiguration:
+          enabled: false
+      exploits:
+          enabled: false
   - path: /etc/systemd/system/vmclarity-scanner.service
     permissions: "0644"
     content: |
@@ -47,8 +93,9 @@ write_files:
       [Install]
       WantedBy=multi-user.target
 runcmd:
-  - [ systemctl, daemon-reload ]
-  - [ systemctl, start, docker.service ]
-  - [ mount, {{ .Volume }}, /mnt/snapshot ]
-  - [ systemctl, start, vmclarity-scanner.service ]
+  - systemctl daemon-reload
+  - systemctl start docker.service
+  - mkdir /mnt/snapshot
+  - mount /dev/{{ .Volume }}1 /mnt/snapshot
+  - systemctl start vmclarity-scanner.service
 `
