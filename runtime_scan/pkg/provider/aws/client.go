@@ -202,12 +202,14 @@ func (c *Client) RunScanningJob(ctx context.Context, snapshot types.Snapshot, co
 		return nil, fmt.Errorf("failed to generate cloud-init: %v", err)
 	}
 
+	keypair := "idan-key-pair"
 	instanceTags := createInstanceTags(snapshot.GetID())
 	userDataBase64 := base64.StdEncoding.EncodeToString([]byte(userData))
-	out, err := c.ec2Client.RunInstances(ctx, &ec2.RunInstancesInput{
+	runInstancesInput := &ec2.RunInstancesInput{
 		MaxCount: utils.Int32Ptr(1),
 		MinCount: utils.Int32Ptr(1),
 		ImageId:  &c.awsConfig.AmiID,
+		KeyName:  &keypair,
 		BlockDeviceMappings: []ec2types.BlockDeviceMapping{
 			{
 				// attach the snapshot to the instance at launch (a new volume will be created)
@@ -222,8 +224,9 @@ func (c *Client) RunScanningJob(ctx context.Context, snapshot types.Snapshot, co
 			},
 		},
 		InstanceType:   ec2types.InstanceTypeT2Large, // TODO need to decide instance type
-		SecurityGroups: nil,                          // use default for now
-		SubnetId:       &c.awsConfig.SubnetID,
+		SecurityGroups: nil,                          // TODO: default is not good - it is not opened to inbound ssh
+		// Network interfaces and an instance-level subnet ID may not be specified on the same request
+		//SubnetId:       &c.awsConfig.SubnetID,
 		TagSpecifications: []ec2types.TagSpecification{
 			{
 				ResourceType: ec2types.ResourceTypeInstance,
@@ -245,7 +248,9 @@ func (c *Client) RunScanningJob(ctx context.Context, snapshot types.Snapshot, co
 				SubnetId:                 &c.awsConfig.SubnetID,
 			},
 		},
-	}, func(options *ec2.Options) {
+	}
+
+	out, err := c.ec2Client.RunInstances(ctx, runInstancesInput, func(options *ec2.Options) {
 		options.Region = snapshot.GetRegion()
 	})
 	if err != nil {
