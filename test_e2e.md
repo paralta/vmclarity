@@ -64,7 +64,7 @@ Update the cloud formation with the pushed docker images, for example:
   scp -i <your ssh key pair> scanConfig.json ubuntu@<ip address>:~/scanConfig.json
   ```
 
-* While ssh'd into the VMClarity server run
+* While ssh'd into the VMClarity server run, update `scanConfig.json` time and post to server
   ```
   curl -X POST http://localhost:8888/api/scanConfigs -H 'Content-Type: application/json' -d @scanConfig.json
   ```
@@ -73,3 +73,11 @@ Update the cloud formation with the pushed docker images, for example:
   ```
   sudo journalctl -u vmclarity -f
   ```
+
+# Debugging scanner VM
+
+* The default security group doesn't allow inbound ssh communication, need to update the group after creation.
+* Run `cat /var/log/cloud-init-output.log` inside the scanner vm to see logs from the cloud init process.
+* Validate that there is data to scan in `/mnt/snapshot` since mount error are not shown in the cloud init logs.
+* Run `sudo journalctl -u vmclarity-scanner -f` inside the scanner vm to see the service logs
+  * The cloud init process takes some time, so be patient when waiting for logs from the scanner service.

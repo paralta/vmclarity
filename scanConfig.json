@@ -7,10 +7,16 @@
         },
         "scheduled": {
                 "objectType": "SingleScheduleScanConfig",
-                "OperationTime": "2023-01-20T15:46:18+00:00"
+                "OperationTime": "2023-01-25T14:07:18+00:00"
         },
         "scope": {
                 "objectType": "AwsScanScope",
-                "all": true
+                "all": true,
+                "instanceTagSelector": [
+                        {
+                                "key": "Name",
+                                "value": "VMClarity Server"
+                        }
+                ]
         }
 }
