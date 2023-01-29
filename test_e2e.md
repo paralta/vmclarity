@@ -4,11 +4,13 @@
 
 ```
 VMCLARITY_TOOLS_BASE=<your vmclarity tools base image> DOCKER_REGISTRY=<your docker hub> make push-docker
+e.g.:
+VMCLARITY_TOOLS_BASE=idanfrim/vmclarity-tools-base DOCKER_TAG=new-tag DOCKER_REGISTRY=idanfrim make push-docker
 ```
 
 ## Update installation/aws/VMClarity.cfn
 
-Update the cloud formation with the pushed docker images, for example:
+Update the cloud formation with the pushed docker images, a diff for example:
 
 ```
 @@ -123,7 +123,7 @@ Resources:
@@ -16,7 +18,7 @@ Update the cloud formation with the pushed docker images, for example:
                      BACKEND_REST_ADDRESS=__BACKEND_REST_ADDRESS__
                      BACKEND_REST_PORT=8888
 -                    SCANNER_CONTAINER_IMAGE=tehsmash/vmclarity-cli:dc2d75a10e5583e97f516be26fcdbb484f98d5c3
-+                    SCANNER_CONTAINER_IMAGE=tehsmash/vmclarity-cli:9bba94334c1de1aeed63ed12de3784d561fc4f1b
++                    SCANNER_CONTAINER_IMAGE=idanfrim/vmclarity-cli:new-tag
                    - JobImageID: !FindInMap
                        - AWSRegionArch2AMI
                        - !Ref "AWS::Region"
@@ -25,14 +27,14 @@ Update the cloud formation with the pushed docker images, for example:
                  ExecStartPre=-/usr/bin/docker rm %n
                  ExecStartPre=/usr/bin/mkdir -p /opt/vmclarity
 -                ExecStartPre=/usr/bin/docker pull tehsmash/vmclarity-backend:dc2d75a10e5583e97f516be26fcdbb484f98d5c3
-+                ExecStartPre=/usr/bin/docker pull tehsmash/vmclarity-backend:9bba94334c1de1aeed63ed12de3784d561fc4f1b
++                ExecStartPre=/usr/bin/docker pull idanfrim/vmclarity-backend:new-tag
                  ExecStart=/usr/bin/docker run \
                    --rm --name %n \
                    -p 0.0.0.0:8888:8888/tcp \
                    -v /opt/vmclarity:/data \
                    --env-file /etc/vmclarity/config.env \
 -                  tehsmash/vmclarity-backend:dc2d75a10e5583e97f516be26fcdbb484f98d5c3 run --log-level info
-+                  tehsmash/vmclarity-backend:9bba94334c1de1aeed63ed12de3784d561fc4f1b run --log-level info
++                  idanfrim/vmclarity-backend:new-tag run --log-level info
 
                  [Install]
                  WantedBy=multi-user.target
@@ -48,7 +50,7 @@ Update the cloud formation with the pushed docker images, for example:
 
 # SSH to the VMClarity server
 
-* Get the IP address from the CloudFormation stack's Output Tab
+* Get the public IP address of VMClarity backend from the CloudFormation stack's Output Tab
   ```
   ssh -i <your ssh key pair> ubuntu@<ip address>
   ```
