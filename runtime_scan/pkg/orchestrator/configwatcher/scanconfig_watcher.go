@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/aptible/supercronic/cronexpr"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/openclarity/vmclarity/api/client"
@@ -114,7 +115,7 @@ func (scw *ScanConfigWatcher) getScanConfigsToScan() ([]models.ScanConfig, error
 		}
 		switch singleSchedule := scheduled.(type) {
 		case models.SingleScheduleScanConfig:
-			shouldScan, err = scw.shouldStartSingleScheduleScanConfig(*scanConfig.Id, singleSchedule, now)
+			shouldScan, err = scw.shouldStartSingleScheduleScanConfig(*scanConfig.Id, singleSchedule.OperationTime, now)
 			if err != nil {
 				log.Errorf("Failed to get scans for scan config ID=%s: %v", *scanConfig.Id, err)
 				continue
@@ -162,14 +163,29 @@ func isWithinTheWindow(checkTime, now time.Time, window time.Duration) bool {
 	return checkTime.Before(endWindowTime)
 }
 
-func (scw *ScanConfigWatcher) shouldStartSingleScheduleScanConfig(scanConfigID string, schedule models.SingleScheduleScanConfig, now time.Time) (bool, error) {
+//Every monday at 4:05
+// 5 4 * * 1
+
+// Every 4 hours
+// 0 */4 * * *
+
+// Every 2 days at 5:00
+// 0 5 */2 * *
+
+// need to save the latest "next" time to be used as fromTime if scan was executed
+
+func getScheduleTime(cronLine string, fromTime time.Time) time.Time {
+	return cronexpr.MustParse(cronLine).Next(fromTime)
+}
+
+func (scw *ScanConfigWatcher) shouldStartSingleScheduleScanConfig(scanConfigID string, schedule time.Time, now time.Time) (bool, error) {
 	// Skip processing ScanConfig because its operationTime is not within the start window
-	if !isWithinTheWindow(schedule.OperationTime, now, timeWindow) {
-		log.Debugf("ScanConfig %s start time %v outside of the start window %v - %v", scanConfigID, schedule.OperationTime.Format(time.RFC3339), now.Format(time.RFC3339), now.Add(timeWindow).Format(time.RFC3339))
+	if !isWithinTheWindow(schedule, now, timeWindow) {
+		log.Debugf("ScanConfig %s schedule time %v outside of the start window %v - %v", scanConfigID, schedule.Format(time.RFC3339), now.Format(time.RFC3339), now.Add(timeWindow).Format(time.RFC3339))
 		return false, nil
 	}
 	// Check running or completed scan for specific scan config
-	hasRunningOrCompletedScan, err := scw.hasRunningScansByScanConfigIDAndOperationTime(scanConfigID, schedule.OperationTime)
+	hasRunningOrCompletedScan, err := scw.hasRunningScansByScanConfigIDAndOperationTime(scanConfigID, schedule)
 	if err != nil {
 		return false, fmt.Errorf("failed to get scans: %v", err)
 	}
