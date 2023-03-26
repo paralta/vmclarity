@@ -37,6 +37,9 @@ const (
 	ScannerKeyPairName              = "SCANNER_KEY_PAIR_NAME"
 	GitleaksBinaryPath              = "GITLEAKS_BINARY_PATH"
 	ClamBinaryPath                  = "CLAM_BINARY_PATH"
+	FreshClamBinaryPath             = "FRESH_CLAM_BINARY_PATH"
+	SignaturesBucketName            = "SignaturesBucketName"
+	ClamFolderPath                  = "CLAM_FOLDER_PATH"
 	AttachedVolumeDeviceName        = "ATTACHED_VOLUME_DEVICE_NAME"
 	defaultAttachedVolumeDeviceName = "xvdh"
 	ScannerBackendAddress           = "SCANNER_VMCLARITY_BACKEND_ADDRESS"
@@ -86,6 +89,15 @@ type ScannerConfig struct {
 	// The clam binary path in the scanner image container.
 	ClamBinaryPath string
 
+	// The freshclam binary path in the scanner image container, used for updating signatures.
+	FreshClamBinaryPath string
+
+	// The name of the bucket that contains the signature files
+	SignaturesBucketName string
+
+	// The path that contains the clam root files
+	ClamFolderPath string
+
 	// the name of the block device to attach to the scanner job
 	DeviceName string
 }
@@ -102,6 +114,9 @@ func setConfigDefaults(backendHost string, backendPort int, backendBaseURL strin
 	viper.SetDefault(ExploitDBAddress, fmt.Sprintf("http://%s", net.JoinHostPort(backendHost, "1326")))
 	viper.SetDefault(AttachedVolumeDeviceName, defaultAttachedVolumeDeviceName)
 	viper.SetDefault(ClamBinaryPath, "clamscan")
+	viper.SetDefault(FreshClamBinaryPath, "freshclam")
+	viper.SetDefault(SignaturesBucketName, "clam-signatures")
+	viper.SetDefault(ClamFolderPath, "/usr/local/share/clamav")
 
 	viper.AutomaticEnv()
 }
@@ -125,6 +140,9 @@ func LoadConfig(backendHost string, backendPort int, baseURL string) (*Orchestra
 			DeviceName:                viper.GetString(AttachedVolumeDeviceName),
 			ExploitsDBAddress:         viper.GetString(ExploitDBAddress),
 			ClamBinaryPath:            viper.GetString(ClamBinaryPath),
+			FreshClamBinaryPath:       viper.GetString(FreshClamBinaryPath),
+			SignaturesBucketName:      viper.GetString(SignaturesBucketName),
+			ClamFolderPath:            viper.GetString(ClamFolderPath),
 		},
 	}
 
