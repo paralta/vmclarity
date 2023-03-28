@@ -24,6 +24,38 @@ import (
 	"github.com/openclarity/vmclarity/runtime_scan/pkg/utils"
 )
 
+func (srp *ScanResultProcessor) getUniqueKeyForFinding(finding models.Finding) (string, error) {
+	hash := sha256.New()
+
+	info, err := finding.ValueByDiscriminator()
+	if err != nil {
+		return "", fmt.Errorf("unable get info from finding: %v", err)
+	}
+
+	switch i := info.(type) {
+	case models.ExploitFindingInfo:
+		hash.Write([]byte(*exploit.SourceDB))
+		hash.Write([]byte(*exploit.CveID))
+		for _, url := range *exploit.Urls {
+			hash.Write([]byte(url))
+		}
+	case models.MalwareFindingInfo:
+		key := malwareKey{*info.MalwareName, *info.MalwareType, *info.Path}
+	case models.MisconfigurationFindingInfo:
+		key := misconfigurationKey{*info.ScannerName, *info.TestID, *info.Message}
+	case models.PackageFindingInfo:
+		key := packageKey{*info.Name, *info.Version}
+	case models.RootkitFindingInfo:
+		key := rootkitKey{*info.RootkitName, string(*info.RootkitType), *info.Path}
+	case models.SecretFindingInfo:
+		key := secretKey{*info.Fingerprint, *info.StartColumn, *info.EndColumn}
+	case models.VulnerabilityFindingInfo:
+		key := vulKey{*vuln.VulnerabilityName, *vuln.Package.Name, *vuln.Package.Version}
+	}
+
+	return string(hash.Sum(nil))
+}
+
 func (srp *ScanResultProcessor) newerExistingFindingTime(ctx context.Context, targetID string, findingType string, completedTime time.Time) (bool, time.Time, error) {
 	var found bool
 	var newerTime time.Time
