@@ -275,6 +275,25 @@ Resources:
                 [Install]
                 WantedBy=multi-user.target
               mode: "000644"
+
+            "/lib/systemd/system/clamav_signatures_mirror.service":
+              content: |
+                [Unit]
+                Description=ClamAVSignaturesMirror
+                After=docker.service
+                Requires=docker.service
+
+                [Service]
+                TimeoutStartSec=0
+                Restart=always
+                ExecStartPre=-/usr/bin/docker stop %n
+                ExecStartPre=-/usr/bin/docker rm %n
+                ExecStartPre=/usr/bin/docker pull tavh/clamav-mirror:latest
+                ExecStart=/usr/bin/docker run --rm --name clamav-mirror -p 8080:8080 --mount source=cvdupdate,target=/mnt/cvdupdate tavh/clamav-mirror:latest
+
+                [Install]
+                WantedBy=multi-user.target
+
           commands:
             01subsitute_rest_address:
               command: /etc/vmclarity/render_config.sh
@@ -636,11 +655,11 @@ Parameters:
   BackendContainerImage:
     Description: Name of the container image used for deploying VMClarity server.
     Type: String
-    Default: ghcr.io/openclarity/vmclarity-backend:latest
+    Default: akpsdocker/vmclarity-backend:e2e
   ScannerContainerImage:
     Description: Name of the container image used for running scans on targets.
     Type: String
-    Default: ghcr.io/openclarity/vmclarity-cli:latest
+    Default: akpsdocker/vmclarity-cli:e2e
 Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
