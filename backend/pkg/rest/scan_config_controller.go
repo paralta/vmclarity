@@ -97,6 +97,11 @@ func (s *ServerImpl) PatchScanConfigsScanConfigID(ctx echo.Context, scanConfigID
 		return sendError(ctx, http.StatusBadRequest, fmt.Sprintf("failed to bind request: %v", err))
 	}
 
+	// Enable scan config in case Scheduled was configured and the Disabled boolean was not set by the caller.
+	if scanConfig.Disabled == nil && scanConfig.Scheduled != nil {
+		scanConfig.Disabled = utils.PointerTo(false)
+	}
+
 	// PATCH request might not contain the ID in the body, so set it from
 	// the URL field so that the DB layer knows which object is being updated.
 	if scanConfig.Id != nil && *scanConfig.Id != scanConfigID {
@@ -132,6 +137,11 @@ func (s *ServerImpl) PutScanConfigsScanConfigID(ctx echo.Context, scanConfigID m
 	err := ctx.Bind(&scanConfig)
 	if err != nil {
 		return sendError(ctx, http.StatusBadRequest, fmt.Sprintf("failed to bind request: %v", err))
+	}
+
+	// Enable scan config in case Scheduled was configured and the Disabled boolean was not set by the caller.
+	if scanConfig.Disabled == nil && scanConfig.Scheduled != nil {
+		scanConfig.Disabled = utils.PointerTo(false)
 	}
 
 	// PUT request might not contain the ID in the body, so set it from the
