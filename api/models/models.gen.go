@@ -24,8 +24,9 @@ const (
 
 // Defines values for CloudProvider.
 const (
-	AWS   CloudProvider = "AWS"
-	Azure CloudProvider = "Azure"
+	AWS    CloudProvider = "AWS"
+	Azure  CloudProvider = "Azure"
+	Docker CloudProvider = "Docker"
 )
 
 // Defines values for MisconfigurationSeverity.
@@ -239,6 +240,27 @@ type Assets struct {
 
 // CloudProvider defines model for CloudProvider.
 type CloudProvider string
+
+// ContainerImageInfo defines model for ContainerImageInfo.
+type ContainerImageInfo struct {
+	Architecture *string `json:"architecture,omitempty"`
+	Id           *string `json:"id,omitempty"`
+	Labels       *[]Tag  `json:"labels"`
+	ObjectType   string  `json:"objectType"`
+	Os           *string `json:"os,omitempty"`
+	Size         *int    `json:"size,omitempty"`
+}
+
+// ContainerInfo defines model for ContainerInfo.
+type ContainerInfo struct {
+	ContainerName *string             `json:"containerName,omitempty"`
+	CreatedAt     *time.Time          `json:"createdAt,omitempty"`
+	Id            *string             `json:"id,omitempty"`
+	Image         *ContainerImageInfo `json:"image,omitempty"`
+	Labels        *[]Tag              `json:"labels"`
+	Location      *string             `json:"location,omitempty"`
+	ObjectType    string              `json:"objectType"`
+}
 
 // DirInfo defines model for DirInfo.
 type DirInfo struct {
