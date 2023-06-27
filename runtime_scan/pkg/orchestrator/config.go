@@ -136,10 +136,12 @@ func LoadConfig(backendHost string, backendPort int, baseURL string) (*Config, e
 	switch strings.ToLower(viper.GetString(ProviderKind)) {
 	case strings.ToLower(string(models.Azure)):
 		providerKind = models.Azure
+	case strings.ToLower(string(models.Docker)):
+		providerKind = models.Docker
 	case strings.ToLower(string(models.AWS)):
-		fallthrough
-	default:
 		providerKind = models.AWS
+	default:
+		return nil, fmt.Errorf("unsupported provider: %s", providerKind)
 	}
 
 	c := &Config{
