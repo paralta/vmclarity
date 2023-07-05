@@ -3,6 +3,8 @@ package docker
 import (
 	"context"
 	"github.com/docker/docker/client"
+	"github.com/openclarity/vmclarity/api/models"
+	"github.com/openclarity/vmclarity/runtime_scan/pkg/provider"
 	"testing"
 )
 
@@ -20,8 +22,35 @@ func TestClient(t *testing.T) {
 		},
 	}
 
-	_, err = c.DiscoverAssets(context.Background())
+	assets, err := c.DiscoverAssets(context.Background())
 	if err != nil {
 		panic(err)
 	}
+
+	for _, asset := range assets {
+		jobConfig := provider.ScanJobConfig{
+			ScannerImage:     "",
+			ScannerCLIConfig: "",
+			VMClarityAddress: "",
+			ScanMetadata: provider.ScanMetadata{
+				ScanID: "1234",
+			},
+			ScannerInstanceCreationConfig: models.ScannerInstanceCreationConfig{},
+			Asset: models.Asset{
+				AssetInfo: &asset,
+			},
+		}
+		err = c.RunAssetScan(context.Background(), &jobConfig)
+		if err != nil {
+			// panic(err)
+			continue
+		}
+
+		err = c.RemoveAssetScan(context.Background(), &jobConfig)
+		if err != nil {
+			// panic(err)
+			continue
+		}
+	}
+
 }
