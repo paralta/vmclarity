@@ -29,7 +29,7 @@ func TestClient(t *testing.T) {
 
 	for _, asset := range assets {
 		jobConfig := provider.ScanJobConfig{
-			ScannerImage:     "",
+			ScannerImage:     "docker pull ghcr.io/openclarity/vmclarity-cli:v0.5.0",
 			ScannerCLIConfig: "",
 			VMClarityAddress: "",
 			ScanMetadata: provider.ScanMetadata{
@@ -42,14 +42,12 @@ func TestClient(t *testing.T) {
 		}
 		err = c.RunAssetScan(context.Background(), &jobConfig)
 		if err != nil {
-			// panic(err)
-			continue
+			panic(err)
 		}
 
 		err = c.RemoveAssetScan(context.Background(), &jobConfig)
 		if err != nil {
-			// panic(err)
-			continue
+			panic(err)
 		}
 	}
 
