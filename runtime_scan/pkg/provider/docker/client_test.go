@@ -31,10 +31,9 @@ func TestClient(t *testing.T) {
 		jobConfig := provider.ScanJobConfig{
 			ScannerImage:     "ghcr.io/openclarity/vmclarity-cli:v0.5.0",
 			ScannerCLIConfig: "",
-			VMClarityAddress: "http://localhost:8888/api",
+			VMClarityAddress: "http://host.docker.internal:8888/api",
 			ScanMetadata: provider.ScanMetadata{
-				ScanID:       "1234",
-				ScanResultID: "asd-123",
+				AssetScanID: "803716a3-a97a-45b0-966f-5dd7ccfc2df4",
 			},
 			ScannerInstanceCreationConfig: models.ScannerInstanceCreationConfig{},
 			Asset: models.Asset{
