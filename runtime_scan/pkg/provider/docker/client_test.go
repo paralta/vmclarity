@@ -18,7 +18,7 @@ func TestClient(t *testing.T) {
 	c := Client{
 		dockerClient: dockerClient,
 		config: &Config{
-			ScannerImage: "ghcr.io/openclarity/vmclarity-cli:v0.5.0",
+			ScannerImage: "ghcr.io/openclarity/vmclarity-cli:latest",
 		},
 	}
 
@@ -29,7 +29,7 @@ func TestClient(t *testing.T) {
 
 	for _, asset := range assets {
 		jobConfig := provider.ScanJobConfig{
-			ScannerImage:     "ghcr.io/openclarity/vmclarity-cli:v0.5.0",
+			ScannerImage:     "ghcr.io/openclarity/vmclarity-cli:latest",
 			ScannerCLIConfig: "",
 			VMClarityAddress: "http://host.docker.internal:8888/api",
 			ScanMetadata: provider.ScanMetadata{
