@@ -26,12 +26,20 @@ type Provider interface {
 	Kind() models.CloudProvider
 
 	Discoverer
+	Estimator
 	Scanner
 }
 
 type Discoverer interface {
 	// DiscoverAssets returns list of discovered AssetType
 	DiscoverAssets(ctx context.Context) ([]models.AssetType, error)
+}
+
+// Estimator estimates asset scans cost, time and size without running any asset scan.
+type Estimator interface {
+	// Estimate returns AssetScanEstimation containing asset scan estimation data per family.
+	// AssetScanStats are stats of previous scans of this asset, the latest stats for each family scan. that can help in the estimation. it can be empty.
+	Estimate(context.Context, models.AssetScanStats, *models.Asset, *models.AssetScanTemplate) (*models.AssetScanEstimation, error)
 }
 
 type Scanner interface {

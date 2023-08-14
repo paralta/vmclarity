@@ -97,6 +97,10 @@ func (c Client) Kind() models.CloudProvider {
 	return models.Azure
 }
 
+func (c *Client) Estimate(ctx context.Context, stats models.AssetScanStats, asset *models.Asset, assetScanTemplate *models.AssetScanTemplate) (*models.AssetScanEstimation, error) {
+	return &models.AssetScanEstimation{}, nil
+}
+
 // nolint:cyclop
 func (c *Client) RunAssetScan(ctx context.Context, config *provider.ScanJobConfig) error {
 	vmInfo, err := config.AssetInfo.AsVMInfo()

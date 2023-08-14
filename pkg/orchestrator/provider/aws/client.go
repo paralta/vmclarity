@@ -69,6 +69,10 @@ func (c Client) Kind() models.CloudProvider {
 	return models.AWS
 }
 
+func (c *Client) Estimate(ctx context.Context, stats models.AssetScanStats, asset *models.Asset, assetScanTemplate *models.AssetScanTemplate) (*models.AssetScanEstimation, error) {
+	return &models.AssetScanEstimation{}, nil
+}
+
 // nolint:cyclop
 func (c *Client) DiscoverAssets(ctx context.Context) ([]models.AssetType, error) {
 	regions, err := c.ListAllRegions(ctx)
