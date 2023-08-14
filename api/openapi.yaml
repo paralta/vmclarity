@@ -2878,7 +2878,7 @@ components:
           items:
             $ref: '#/components/schemas/AssetScanEstimation'
 
-    ScanEstimationRelationship:
+    ScanEstimationFakeRelationship:
       type: object
       properties:
         id:
@@ -2893,7 +2893,7 @@ components:
           $ref: '#/components/schemas/AssetRelationship'
         # TODO (erezf) replace with ScanEstimationRelationship object (?)
         scanEstimation:
-          $ref: '#/components/schemas/ScanEstimationRelationship'
+          $ref: '#/components/schemas/ScanEstimationFakeRelationship'
         state:
           $ref: '#/components/schemas/AssetScanEstimationState'
         estimation:

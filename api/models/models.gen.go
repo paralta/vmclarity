@@ -236,12 +236,12 @@ type AssetScan struct {
 // AssetScanEstimation defines model for AssetScanEstimation.
 type AssetScanEstimation struct {
 	// Asset Describes a relationship to an asset which can be expanded.
-	Asset             *AssetRelationship          `json:"asset,omitempty"`
-	AssetScanTemplate *AssetScanTemplate          `json:"assetScanTemplate,omitempty"`
-	Estimation        *Estimation                 `json:"estimation,omitempty"`
-	Id                *string                     `json:"id,omitempty"`
-	ScanEstimation    *ScanEstimationRelationship `json:"scanEstimation,omitempty"`
-	State             *AssetScanEstimationState   `json:"state,omitempty"`
+	Asset             *AssetRelationship              `json:"asset,omitempty"`
+	AssetScanTemplate *AssetScanTemplate              `json:"assetScanTemplate,omitempty"`
+	Estimation        *Estimation                     `json:"estimation,omitempty"`
+	Id                *string                         `json:"id,omitempty"`
+	ScanEstimation    *ScanEstimationFakeRelationship `json:"scanEstimation,omitempty"`
+	State             *AssetScanEstimationState       `json:"state,omitempty"`
 }
 
 // AssetScanEstimationExists defines model for AssetScanEstimationExists.
@@ -813,8 +813,8 @@ type ScanEstimationExists struct {
 	ScanEstimation *ScanEstimation `json:"scanEstimation,omitempty"`
 }
 
-// ScanEstimationRelationship defines model for ScanEstimationRelationship.
-type ScanEstimationRelationship struct {
+// ScanEstimationFakeRelationship defines model for ScanEstimationFakeRelationship.
+type ScanEstimationFakeRelationship struct {
 	Id *string `json:"id,omitempty"`
 }
 
