@@ -37,8 +37,10 @@ type Discoverer interface {
 
 // Estimator estimates asset scans cost, time and size without running any asset scan.
 type Estimator interface {
-	// Estimate returns Estimation containing asset scan estimation data.
-	// AssetScanStats are stats of previous scans of this asset, the latest stats for each family scan. Stats can help in the estimation, and can be empty.
+	// Estimate returns Estimation containing asset scan estimation data according to the AssetScanTemplate.
+	// The cost estimation takes into account all the resources that are being used during a scan, and includes a detailed bill of the cost of each resource.
+	// If AssetScanTemplate contains several input paths to scan, the cost will be calculated for each input and will be summed up to a total cost.
+	// When exists, the scan size and scan time will be taken from the AssetScanStats. Otherwise, they will be estimated base on lab tests and Asset volume size.
 	Estimate(context.Context, models.AssetScanStats, *models.Asset, *models.AssetScanTemplate) (*models.Estimation, error)
 }
 

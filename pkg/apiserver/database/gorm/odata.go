@@ -919,6 +919,19 @@ var schemaMetas = map[string]odatasql.SchemaMeta{
 			"time": odatasql.FieldMeta{FieldType: odatasql.PrimitiveFieldType},
 			"size": odatasql.FieldMeta{FieldType: odatasql.PrimitiveFieldType},
 			"cost": odatasql.FieldMeta{FieldType: odatasql.PrimitiveFieldType}, // TODO are we handling float numbers in the db?
+			"recipe": odatasql.FieldMeta{
+				FieldType: odatasql.CollectionFieldType,
+				CollectionItemMeta: &odatasql.FieldMeta{
+					FieldType:           odatasql.ComplexFieldType,
+					ComplexFieldSchemas: []string{"RecipeComponent"},
+				},
+			},
+		},
+	},
+	"RecipeComponent": {
+		Fields: odatasql.Schema{
+			"operation": odatasql.FieldMeta{FieldType: odatasql.PrimitiveFieldType},
+			"cost":      odatasql.FieldMeta{FieldType: odatasql.PrimitiveFieldType},
 		},
 	},
 	"ScanEstimationSummary": {

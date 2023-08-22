@@ -185,19 +185,21 @@ func (w *Watcher) reconcilePending(ctx context.Context, assetScanEstimation *mod
 
 	estimation, err := w.provider.Estimate(ctx, stats, asset, assetScanEstimation.AssetScanTemplate)
 	if err != nil {
+		logger.Errorf("Failed to estimate asset scan: %v", err)
 		assetScanEstimation.State.State = utils.PointerTo(models.AssetScanEstimationStateStateFailed)
 		assetScanEstimation.State.Errors = utils.PointerTo(utils.UnwrapErrorStrings(err))
 	} else {
+		logger.Infof("Asset scan estimation completed successfully. Estimation=%v", estimation)
 		assetScanEstimation.State.State = utils.PointerTo(models.AssetScanEstimationStateStateDone)
+		assetScanEstimation.Estimation = &models.Estimation{
+			Cost:   estimation.Cost,
+			Size:   estimation.Size,
+			Time:   estimation.Time,
+			Recipe: estimation.Recipe,
+		}
 	}
 
 	assetScanEstimation.State.LastTransitionTime = utils.PointerTo(time.Now())
-
-	assetScanEstimation.Estimation = &models.Estimation{
-		Cost: estimation.Cost,
-		Size: estimation.Size,
-		Time: estimation.Time,
-	}
 
 	assetScanEstimationPatch := models.AssetScanEstimation{
 		State:      assetScanEstimation.State,

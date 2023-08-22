@@ -631,8 +631,8 @@ type PodInfo struct {
 
 // RecipeComponent defines model for RecipeComponent.
 type RecipeComponent struct {
-	Cost      *float32 `json:"cost,omitempty"`
-	Operation *string  `json:"operation,omitempty"`
+	Cost      float32 `json:"cost"`
+	Operation string  `json:"operation"`
 }
 
 // ResourceCleanupState defines model for ResourceCleanupState.

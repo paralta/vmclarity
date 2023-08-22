@@ -2879,6 +2879,7 @@ components:
         cost:
           type: number
           format: float
+      required: ['operation','cost']
 
     AssetScanEstimations:
       type: object
