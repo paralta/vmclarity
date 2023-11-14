@@ -8,6 +8,8 @@ import RiskiestRegionsWidget from './RiskiestRegionsWidget';
 import RiskiestAssetsWidget from './RiskiestAssetsWidget';
 import FindingsImpactWidget from './FindingsImpactWidget';
 import EmptyScansDisplay from './EmptyScansDisplay';
+import { QUERY_KEYS, vmClarityApi } from 'api';
+import { useQuery } from '@tanstack/react-query';
 
 import COLORS from 'utils/scss_variables.module.scss';
 
@@ -19,7 +21,12 @@ const COUNTERS_CONFIG = [
 ];
 
 const Dashboard = () => {
-    const [{data, error, loading}] = useFetch(APIS.SCANS);
+    const [{data, error, loading}] = useFetch(APIS.SCANS) as any;
+
+    const { data: assetsResponse } = useQuery({ queryKey: [QUERY_KEYS.assets], queryFn: () => vmClarityApi.getAssets()});
+    const { data: assets } = useQuery({ queryKey: [QUERY_KEYS.assets], queryFn: () => vmClarityApi.getAssets(), select: (resp) => resp.data});
+    console.log(assetsResponse);
+    console.log(assets);
 
     if (loading) {
         return <Loader />;
