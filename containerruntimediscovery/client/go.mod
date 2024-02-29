@@ -3,8 +3,8 @@ module github.com/openclarity/vmclarity/containerruntimediscovery/client
 go 1.21.4
 
 require (
-	github.com/openclarity/vmclarity/api/types v0.7.0-rc.3
-	github.com/openclarity/vmclarity/containerruntimediscovery/types v0.7.0-rc.3
+	github.com/openclarity/vmclarity/api/types v0.7.0-rc.4
+	github.com/openclarity/vmclarity/containerruntimediscovery/types v0.7.0-rc.4
 )
 
 require (
