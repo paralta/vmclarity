@@ -2,6 +2,6 @@ module github.com/openclarity/vmclarity/installation
 
 go 1.21.4
 
-require github.com/openclarity/vmclarity/utils v0.7.0-rc.2
+require github.com/openclarity/vmclarity/utils v0.7.0-rc.3
 
 replace github.com/openclarity/vmclarity/utils => ../utils
