@@ -5,8 +5,8 @@ go 1.21.4
 require (
 	github.com/deepmap/oapi-codegen/v2 v2.1.0
 	github.com/oapi-codegen/runtime v1.1.1
-	github.com/openclarity/vmclarity/api/types v0.7.0-rc.0
-	github.com/openclarity/vmclarity/core v0.7.0-rc.0
+	github.com/openclarity/vmclarity/api/types v0.7.0-rc.1
+	github.com/openclarity/vmclarity/core v0.7.0-rc.1
 )
 
 require (
