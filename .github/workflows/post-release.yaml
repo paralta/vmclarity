@@ -16,7 +16,7 @@ jobs:
       - name: Get modules
         id: modules
         run: |
-          echo "modules=$(find . -name go.mod -exec dirname {} \; | sed 's/^\.\///')"
+          echo "modules=$(find . -name go.mod -exec dirname {} \; | sed 's/^\.\///' | jq -R . | jq -s .)"
 
   create_module_tags:
     needs:
