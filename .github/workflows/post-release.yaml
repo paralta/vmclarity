@@ -16,7 +16,7 @@ jobs:
       - name: Get modules
         id: modules
         run: |
-          echo "modules=$(find . -name go.mod -exec dirname {} \; | sed 's/^\.\///' | jq -R . | jq -s .)" >> "$GITHUB_OUTPUT"
+          echo "modules=$(find . -name go.mod -type f | xargs awk '/module/ {print $2}' | jq -c -R '[.,inputs] | map(sub("^github.com\/openclarity\/vmclarity\/";"")) | @json')" >> "$GITHUB_OUTPUT"
 
   create_module_tags:
     needs:
