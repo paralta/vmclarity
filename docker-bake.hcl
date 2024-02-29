@@ -1,7 +1,7 @@
 # Documentation available at: https://docs.docker.com/build/bake/
 
 # Docker build args
-variable "DOCKER_REGISTRY" {default = "ghcr.io/openclarity"}
+variable "DOCKER_REGISTRY" {default = "ghcr.io/paralta"}
 variable "DOCKER_TAG" {default = "latest"}
 variable "SUFFIX" {default = ""}
 
