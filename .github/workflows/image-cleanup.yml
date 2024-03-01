@@ -4,10 +4,10 @@ on:
   pull_request:
     types:
       - closed
-  schedule:
+  # schedule:
     # At minute 0 on every day-of-week from Monday through Friday.
     # https://crontab.guru/#0_*_*_*_1-5
-    - cron: '0 * * * 1-5'
+    # - cron: '0 * * * 1-5'
   workflow_dispatch:
     inputs:
       cut-off:
